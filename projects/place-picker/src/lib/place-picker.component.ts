@@ -23,10 +23,13 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
 
   @Input()
   defaultLocation: Location = {
-    lat: 0,
-    lng: 0,
-    zoomLevel: 8
+    lat: 19.2185598,
+    lng: 72.8598972,
+    zoomLevel: 14
   };
+
+  @Output()
+  searchSelected: EventEmitter<Location> = new EventEmitter<Location>();
 
   @Output()
   locationPicked: EventEmitter<Location> = new EventEmitter<Location>();
@@ -81,7 +84,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
     if (window.hasOwnProperty('google')) {
       this.googleMap = new google.maps.Map(this.map.nativeElement, {
         center: { lat: this.defaultLocation.lat, lng: this.defaultLocation.lng },
-        zoom: 8
+        zoom: this.defaultLocation.zoomLevel
       });
 
       if (google.maps.hasOwnProperty('places')) {
@@ -105,7 +108,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
   }
 
   selectSearchResult(result: Location) {
-    this.locationPicked.next(result);
+    this.searchSelected.next(result);
     this.clearSearch();
   }
 }
