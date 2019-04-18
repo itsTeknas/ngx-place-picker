@@ -134,6 +134,41 @@
           }
         }
       }
+    },
+    "place-picker": {
+      "root": "projects/place-picker",
+      "sourceRoot": "projects/place-picker/src",
+      "projectType": "library",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/place-picker/tsconfig.lib.json",
+            "project": "projects/place-picker/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/place-picker/src/test.ts",
+            "tsConfig": "projects/place-picker/tsconfig.spec.json",
+            "karmaConfig": "projects/place-picker/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/place-picker/tsconfig.lib.json",
+              "projects/place-picker/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ngx-place-picker"

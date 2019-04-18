@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "place-picker": [
+        "dist/place-picker"
+      ],
+      "place-picker/*": [
+        "dist/place-picker/*"
+      ]
+    }
   }
 }

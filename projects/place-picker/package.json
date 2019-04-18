@@ -1,0 +1,41 @@
+{
+  "name": "ngx-place-picker",
+  "version": "0.0.1",
+  "contributors": [
+    {
+      "email": "sanket@blackcurrantapps.com",
+      "name": "Sanket Berde",
+      "url": "http://sanketberde.com"
+    },
+    {
+      "name": "Shubham Chaudhari",
+      "email": "shubham@blackcurrantapps.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itsTeknas/ngx-place-picker.git"
+  },
+  "author": {
+    "email": "sanket@blackcurrantapps.com",
+    "name": "Sanket Berde",
+    "url": "http://sanketberde.com"
+  },
+  "keywords": [
+    "angular",
+    "place",
+    "location",
+    "picker",
+    "ngx",
+    "google",
+    "maps"
+  ],
+  "bugs": {
+    "url": "https://github.com/itsTeknas/ngx-place-picker/issues"
+  },
+  "description": "Angular components to help pick location using google maps and places API",
+  "peerDependencies": {
+    "@angular/common": "^7.2.0",
+    "@angular/core": "^7.2.0"
+  }
+}
