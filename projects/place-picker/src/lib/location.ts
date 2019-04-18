@@ -1,6 +1,6 @@
 export class Location {
   lat: number;
-  lon: number;
+  lng: number;
   altitude?: number;
   name?: string;
   zoomLevel?: number;
