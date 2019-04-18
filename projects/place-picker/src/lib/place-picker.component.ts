@@ -84,6 +84,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
     if (window.hasOwnProperty('google')) {
       this.googleMap = new google.maps.Map(this.map.nativeElement, {
         center: { lat: this.defaultLocation.lat, lng: this.defaultLocation.lng },
+        disableDefaultUI: true,
         zoom: this.defaultLocation.zoomLevel
       });
 
