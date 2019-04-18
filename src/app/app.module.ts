@@ -1,3 +1,4 @@
+import { PlacePickerModule } from './../../projects/place-picker/src/lib/place-picker.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -8,7 +9,8 @@ import { AppComponent } from './app.component';
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    PlacePickerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

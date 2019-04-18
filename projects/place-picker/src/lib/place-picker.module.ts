@@ -2,9 +2,13 @@ import { NgModule } from '@angular/core';
 import { PlacePickerComponent } from './place-picker.component';
 
 @NgModule({
-  declarations: [PlacePickerComponent],
+  declarations: [
+    PlacePickerComponent
+  ],
   imports: [
   ],
-  exports: [PlacePickerComponent]
+  exports: [
+    PlacePickerComponent
+  ]
 })
 export class PlacePickerModule { }
