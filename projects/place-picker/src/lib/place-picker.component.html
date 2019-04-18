@@ -4,9 +4,7 @@
     <div class="place-prepend" title="Use my current location">&#8982;</div><!-- prepend -->
   </div><!-- form-group -->
   <div class="place-search-list">
-    <div class="place-item">Mumbai</div><!-- item -->
-    <div class="place-item">Delhi</div><!-- item -->
-    <div class="place-item">Banglore</div><!-- item -->
+    <div *ngFor="let result of this.searchResults; index as i" (click)="this.selectSearchResult(result)" class="place-item">{{result.name}}</div><!-- item -->
   </div><!-- list -->
   <div class="place-map" #map></div><!-- map -->
 

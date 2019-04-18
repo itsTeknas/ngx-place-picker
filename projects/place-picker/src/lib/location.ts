@@ -4,4 +4,5 @@ export class Location {
   altitude?: number;
   name?: string;
   zoomLevel?: number;
+  icon?: string;
 }

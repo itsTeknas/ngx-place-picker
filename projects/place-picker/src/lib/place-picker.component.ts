@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { tap, debounce, debounceTime, map, filter } from 'rxjs/operators';
+import { BehaviorSubject, of, Observable } from 'rxjs';
+import { tap, debounceTime, map, filter } from 'rxjs/operators';
 import { Location } from './location';
 
 declare var google: any;
@@ -41,7 +41,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
   private search$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   search = '';
 
-  public searchResults = [];
+  public searchResults: Location[];
 
   constructor() { }
 
@@ -56,19 +56,24 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
       map((searchQuery) => {
         const placesRequest = {
           query: searchQuery,
-          fields: ['name', 'geometry'],
+          fields: ['name', 'geometry', 'icon'],
         };
-        this.placesSearchService.findPlaceFromQuery(placesRequest, (results, status) => {
-          this.searchResults = results;
+        return placesRequest;
+      }),
+    ).subscribe((placesRequest) => {
+      this.placesSearchService.findPlaceFromQuery(placesRequest, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
           console.log(results);
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
-            this.googleMap.setCenter(results[0].geometry.location);
-          }
-        });
-      })
-
-    ).subscribe((ok) => {
-
+          this.googleMap.setCenter(results[0].geometry.location);
+          this.searchResults = (results as unknown as any[])
+            .map(p => ({
+              lat: p.geometry.location.lat(),
+              lng: p.geometry.location.lng(),
+              name: p.name,
+              icon: p.icon
+            })) as unknown as Location[];
+        }
+      });
     });
   }
 
@@ -97,5 +102,10 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
 
   searchChange($event) {
     this.search$.next(this.search);
+  }
+
+  selectSearchResult(result: Location) {
+    this.locationPicked.next(result);
+    this.clearSearch();
   }
 }
