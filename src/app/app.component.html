@@ -1,1 +1,27 @@
-<ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="true"></ngx-place-picker>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 text-center">
+      {{this.location.lat}}, {{this.location.lng}}, {{this.location.zoom}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="true"
+        [enablePlacesSearch]="true"></ngx-place-picker>
+    </div>
+    <div class="col-md-6">
+      <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="true"
+        [enablePlacesSearch]="false"></ngx-place-picker>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="false"
+        [enablePlacesSearch]="true"></ngx-place-picker>
+    </div>
+    <div class="col-md-6">
+      <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="false"
+        [enablePlacesSearch]="false"></ngx-place-picker>
+    </div>
+  </div>
+</div>

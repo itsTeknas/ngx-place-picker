@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Outp
 import { BehaviorSubject, of, Observable, Subscription } from 'rxjs';
 import { tap, debounceTime, map, filter } from 'rxjs/operators';
 import { Location } from './location';
-import { Z_RLE } from 'zlib';
 
 declare var google: any;
 
@@ -22,6 +21,8 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
   enablePlacesSearch = false;
   @Input()
   defaultLocation: Location;
+  @Input()
+  vSize = 400;
 
   @Output()
   locationChanged: EventEmitter<Location> = new EventEmitter<Location>();
@@ -82,7 +83,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.locationChanged.next(this.location);
       });
 
-      if (google.maps.hasOwnProperty('places')) {
+      if (this.enableCurrentLocation && google.maps.hasOwnProperty('places')) {
         this.placesSearchService = new google.maps.places.PlacesService(this.googleMap);
         this.searchSubscription = this.search$.pipe(
           filter((query) => !!query),
@@ -101,7 +102,6 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.placesSearchService.findPlaceFromQuery(placesRequest, (results, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
               console.log(results);
-              this.googleMap.setCenter(results[0].geometry.location);
               this.searchResults = (results as unknown as any[])
                 .map(p => ({
                   lat: p.geometry.location.lat(),
@@ -134,6 +134,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectSearchResult(result: Location) {
     this.location = result;
+    this.googleMap.setCenter({ lat: result.lat, lng: result.lng });
     this.clearSearch();
   }
 
@@ -150,9 +151,9 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initDefaultLocation(): Location {
     return {
-        lat: 19.2185598,
-        lng: 72.8598972,
-        zoom: 14
+      lat: 19.2185598,
+      lng: 72.8598972,
+      zoom: 14
     }
   }
 }

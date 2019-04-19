@@ -7,8 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  public location: Location;
 
   logLocationChange(location: Location) {
+    this.location = location;
     console.log(location);
   }
 }
