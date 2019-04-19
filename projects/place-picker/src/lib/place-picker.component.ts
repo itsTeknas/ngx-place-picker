@@ -25,10 +25,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
   defaultLocation: Location;
 
   @Output()
-  searchSelected: EventEmitter<Location> = new EventEmitter<Location>();
-
-  @Output()
-  locationPicked: EventEmitter<Location> = new EventEmitter<Location>();
+  locationChanged: EventEmitter<Location> = new EventEmitter<Location>();
 
   location: Location;
 
@@ -86,6 +83,14 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
         zoom: this.defaultLocation.zoomLevel
       });
 
+      this.googleMap.addListener('center_changed', (changeEvent) => {
+        const center = this.googleMap.getCenter();
+        this.location.lat = center.lat();
+        this.location.lng = center.lng();
+        this.location.zoomLevel = this.googleMap.getZoom();
+        this.locationChanged.next(this.location);
+      });
+
       if (google.maps.hasOwnProperty('places')) {
         this.placesSearchService = new google.maps.places.PlacesService(this.googleMap);
         this.searchSubscription = this.search$.pipe(
@@ -138,11 +143,13 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectSearchResult(result: Location) {
     this.location = result;
-    this.searchSelected.next(result);
     this.clearSearch();
   }
 
   ngOnDestroy() {
+    if (this.googleMap) {
+      google.maps.event.clearListeners(this.googleMap, 'center_changed');
+    }
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
