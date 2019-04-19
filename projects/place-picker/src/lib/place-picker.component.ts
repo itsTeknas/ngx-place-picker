@@ -54,8 +54,8 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
         lng: 72.8598972,
         zoomLevel: 14
       };
+      this.location = this.defaultLocation;
     }
-    this.location = this.defaultLocation;
 
     if (!this.defaultLocation && this.enableCurrentLocation) {
       if (navigator.geolocation) {
@@ -136,6 +136,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
   }
 
   selectSearchResult(result: Location) {
+    this.location = result;
     this.searchSelected.next(result);
     this.clearSearch();
   }
