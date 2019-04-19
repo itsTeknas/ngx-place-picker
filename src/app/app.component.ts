@@ -1,3 +1,4 @@
+import { Location } from './../../projects/place-picker/src/lib/location';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ngx-place-picker';
+
+  logLocationChange(location: Location) {
+    console.log(location);
+  }
 }
