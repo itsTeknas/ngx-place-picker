@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-12 text-center">
+    <div *ngIf="this.location" class="col-12 text-center">
       {{this.location.lat}}, {{this.location.lng}}, {{this.location.zoom}}
     </div>
   </div>
