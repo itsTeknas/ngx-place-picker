@@ -74,10 +74,7 @@
 }
 .place-search .place-map-body
 {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
+  position: relative;
   min-height: 250px;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -90,12 +87,12 @@
 }
 .place-search .place-map-body .pin {
   position: absolute;
-  top: calc(50% - 25.5px);
-  left: calc(50% - 12px);
+  top: calc(50% - 22.5px);
+  left: calc(50% - 10px);
   border-radius: 50%;
-  border: 8px solid #e85a23;
-  width: 8px;
-  height: 8px;
+  border: 5px solid #e85a23;
+  width: 20px;
+  height: 20px;
   z-index: 1200;
 }
 
@@ -104,12 +101,19 @@
   content: '';
   width: 0px;
   height: 0px;
-  bottom: -30px;
-  left: -6px;
-  border: 10px solid transparent;
+  bottom: -26px;
+  left: -3px;
+  border: 8px solid transparent;
   border-top: 17px solid #e85a23;
 }
-
-.map-top-position {
-  top: 45px !important;
+.hm
+{
+  font-family: 'Nunito', sans-serif;
+}
+.hm h2
+{
+  font-size: 18px;
+  font-weight: 600;
+  padding: 0;
+  margin: 0 0 30px;
 }
