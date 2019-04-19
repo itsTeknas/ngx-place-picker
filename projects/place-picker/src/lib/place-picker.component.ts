@@ -83,38 +83,40 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.locationChanged.next(this.location);
       });
 
-      if (this.enableCurrentLocation && google.maps.hasOwnProperty('places')) {
-        this.placesSearchService = new google.maps.places.PlacesService(this.googleMap);
-        this.searchSubscription = this.search$.pipe(
-          filter((query) => !!query),
-          debounceTime(200),
-          tap((search) => {
-            console.log('Searching: ', search);
-          }),
-          map((searchQuery) => {
-            const placesRequest = {
-              query: searchQuery,
-              fields: ['name', 'geometry', 'icon'],
-            };
-            return placesRequest;
-          }),
-        ).subscribe((placesRequest) => {
-          this.placesSearchService.findPlaceFromQuery(placesRequest, (results, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK) {
-              console.log(results);
-              this.searchResults = (results as unknown as any[])
-                .map(p => ({
-                  lat: p.geometry.location.lat(),
-                  lng: p.geometry.location.lng(),
-                  name: p.name,
-                  icon: p.icon
-                })) as unknown as Location[];
-              this.changeDetector.detectChanges();
-            }
+      if (this.enableCurrentLocation) {
+        if (google.maps.hasOwnProperty('places')) {
+          this.placesSearchService = new google.maps.places.PlacesService(this.googleMap);
+          this.searchSubscription = this.search$.pipe(
+            filter((query) => !!query),
+            debounceTime(200),
+            tap((search) => {
+              console.log('Searching: ', search);
+            }),
+            map((searchQuery) => {
+              const placesRequest = {
+                query: searchQuery,
+                fields: ['name', 'geometry', 'icon'],
+              };
+              return placesRequest;
+            }),
+          ).subscribe((placesRequest) => {
+            this.placesSearchService.findPlaceFromQuery(placesRequest, (results, status) => {
+              if (status === google.maps.places.PlacesServiceStatus.OK) {
+                console.log(results);
+                this.searchResults = (results as unknown as any[])
+                  .map(p => ({
+                    lat: p.geometry.location.lat(),
+                    lng: p.geometry.location.lng(),
+                    name: p.name,
+                    icon: p.icon
+                  })) as unknown as Location[];
+                this.changeDetector.detectChanges();
+              }
+            });
           });
-        });
-      } else {
-        console.error('Places API not enabled or present in the script import');
+        } else {
+          console.error('Places API not enabled or present in the script import');
+        }
       }
 
     } else {
