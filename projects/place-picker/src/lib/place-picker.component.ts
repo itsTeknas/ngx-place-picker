@@ -22,11 +22,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
   limitSearchResults = 3;
 
   @Input()
-  defaultLocation: Location = {
-    lat: 19.2185598,
-    lng: 72.8598972,
-    zoomLevel: 14
-  };
+  defaultLocation: Location;
 
   @Output()
   searchSelected: EventEmitter<Location> = new EventEmitter<Location>();
@@ -51,7 +47,33 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
+
+    if (!this.defaultLocation) {
+      this.defaultLocation = {
+        lat: 19.2185598,
+        lng: 72.8598972,
+        zoomLevel: 14
+      };
+    }
     this.location = this.defaultLocation;
+
+    if (!this.defaultLocation && this.enableCurrentLocation) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          if (this.googleMap) {
+            this.googleMap.setCenter(pos);
+          }
+        }, () => {
+          // error fetching location
+        });
+      } else {
+        // Browser doesn't support Geolocation
+      }
+    }
   }
 
   ngAfterViewInit() {
