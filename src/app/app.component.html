@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid hm">
 
   <div class="text-center mb-3 mt-2 py-0">
     <div class="jumbotron">
@@ -8,9 +8,9 @@
         <code><small *ngIf="this.location">{{this.location.lat}}, {{this.location.lng}}, zoom: {{this.location.zoom}}</small></code>
       </p>
       <hr class="my-2">
-      <p>
+      <p class="mt-3">
         <a href="https://github.com/itsTeknas/ngx-place-picker">
-          <button type="button" class="btn btn-primary mx-2">Github Repository</button>
+          <button type="button" class="btn btn-secondary mx-2">Github Repository</button>
         </a>
         <a href="https://www.npmjs.com/package/ngx-place-picker">
           <button type="button" routerLink="" class="btn btn-primary mx-2">NPM Module</button>
@@ -21,24 +21,24 @@
 
   <div class="row">
     <div class="col-md-6">
-      <h2>Search and location enabled</h2>
+      <h2>1. Search and location enabled</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="true"
         [enablePlacesSearch]="true"></ngx-place-picker>
     </div>
     <div class="col-md-6">
-      <h2>Search Enabled Location Disabled</h2>
+      <h2>2. Search Enabled Location Disabled</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="false"
         [enablePlacesSearch]="true"></ngx-place-picker>
     </div>
   </div>
   <div class="row mt-3">
     <div class="col-md-6">
-      <h2>Search disabled, Location enabled</h2>
+      <h2>3. Search disabled, Location enabled</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="true"
         [enablePlacesSearch]="false"></ngx-place-picker>
     </div>
     <div class="col-md-6">
-      <h2>Search disabled, Location disabled</h2>
+      <h2>4. Search disabled, Location disabled</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="false"
         [enablePlacesSearch]="false"></ngx-place-picker>
     </div>
@@ -46,13 +46,13 @@
 
   <div class="row mt-3">
     <div class="col-md-6">
-      <h2>Default Location: Bermuda Triangle</h2>
+      <h2>5. Default Location: Bermuda Triangle</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)"
         [defaultLocation]="{'lat':21.3755379,'lng':-77.2924902,'zoom':5}" [enablePlacesSearch]="true">
       </ngx-place-picker>
     </div>
     <div class="col-md-6">
-      <h2>Default Location: Area 51</h2>
+      <h2>6. Default Location: Area 51</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)"
         [defaultLocation]="{'lat':36.6438012,'lng':-116.3981861,'zoom':17}" [enablePlacesSearch]="true">
       </ngx-place-picker>
