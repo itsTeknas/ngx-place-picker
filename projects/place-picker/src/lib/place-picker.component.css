@@ -19,18 +19,24 @@
   border:1px solid #ddd;
   background-color: #fff;
   height: 45px;
+  padding: 0 15px;
+  font-size: 16px;
   border-radius: 0;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   width: 1%;
 }
+.place-search .place-form-group .place-input:focus
+{
+  outline: none;
+}
 .place-search .place-form-group .place-prepend
 {
   position: relative;
   padding:0 10px;
-  line-height: 40px;
+  line-height: 35px;
   vertical-align: middle;
-  font-size: 40px;
+  font-size: 35px;
   border:1px solid #ddd;
   border-left: 0;
   font-weight: 400;
@@ -45,7 +51,9 @@
   background-color: #ffffffde;
   border: 1px solid #ddd;
   box-shadow: 0px 3px 6px 1px rgba(0,0,0,0.1);
-  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 600;
 }
 .place-search .place-search-list .place-item
 {
@@ -64,15 +72,40 @@
 {
   background-color: #fff;
 }
-.place-search .place-map
+.place-search .place-map-body
 {
   position: absolute;
   left: 0;
   right: 0;
   top: 45px;
-  height: 200px;
+  min-height: 250px;
   background-color: #fff;
   border: 1px solid #ddd;
-  background-color: rgb(255, 227, 175);
-  z-index: 80;
+  background-color: #ffe3af;
+  z-index: 500;
+}
+.place-search .place-map
+{
+  height: 100%;
+}
+.place-search .place-map-body .pin {
+  position: absolute;
+  top: calc(50% - 25.5px);
+  left: calc(50% - 12px);
+  border-radius: 50%;
+  border: 8px solid #e85a23;
+  width: 8px;
+  height: 8px;
+  z-index: 1200;
+}
+
+.place-search .place-map-body .pin::after {
+  position: absolute;
+  content: '';
+  width: 0px;
+  height: 0px;
+  bottom: -30px;
+  left: -6px;
+  border: 10px solid transparent;
+  border-top: 17px solid #e85a23;
 }
