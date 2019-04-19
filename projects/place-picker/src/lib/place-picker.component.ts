@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Outp
 import { BehaviorSubject, of, Observable, Subscription } from 'rxjs';
 import { tap, debounceTime, map, filter } from 'rxjs/operators';
 import { Location } from './location';
+import { Z_RLE } from 'zlib';
 
 declare var google: any;
 
@@ -12,15 +13,13 @@ declare var google: any;
 })
 export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input()
-  enableCurrentLocation = true;
+  @ViewChild('map')
+  private map: ElementRef;
 
+  @Input()
+  enableCurrentLocation = false;
   @Input()
   enablePlacesSearch = false;
-
-  @Input()
-  limitSearchResults = 3;
-
   @Input()
   defaultLocation: Location;
 
@@ -28,9 +27,6 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
   locationChanged: EventEmitter<Location> = new EventEmitter<Location>();
 
   location: Location;
-
-  @ViewChild('map')
-  private map: ElementRef;
 
   private googleMap: any;
   private placesSearchService: any;
@@ -47,15 +43,10 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
 
     if (!this.defaultLocation) {
-      this.defaultLocation = {
-        lat: 19.2185598,
-        lng: 72.8598972,
-        zoomLevel: 14
-      };
-      this.location = this.defaultLocation;
+      this.location = this.defaultLocation = this.initDefaultLocation();
     }
 
-    if (!this.defaultLocation && this.enableCurrentLocation) {
+    if (this.enableCurrentLocation) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           const pos = {
@@ -80,14 +71,14 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
         center: { lat: this.defaultLocation.lat, lng: this.defaultLocation.lng },
         disableDefaultUI: true,
         zoomControl: true,
-        zoom: this.defaultLocation.zoomLevel
+        zoom: this.defaultLocation.zoom || 14
       });
 
       this.googleMap.addListener('center_changed', (changeEvent) => {
         const center = this.googleMap.getCenter();
         this.location.lat = center.lat();
         this.location.lng = center.lng();
-        this.location.zoomLevel = this.googleMap.getZoom();
+        this.location.zoom = this.googleMap.getZoom();
         this.locationChanged.next(this.location);
       });
 
@@ -155,5 +146,13 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     delete this.googleMap;
     delete this.placesSearchService;
+  }
+
+  private initDefaultLocation(): Location {
+    return {
+        lat: 19.2185598,
+        lng: 72.8598972,
+        zoom: 14
+    }
   }
 }
