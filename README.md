@@ -1,27 +1,52 @@
-# NgxPlacePicker
+# ngx-place-picker
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
+Angular components to help pick location using google maps and places API
+<br>
+[Live Preview](https://itsteknas.github.io/ngx-place-picker/).
 
-## Development server
+## Installation
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+`npm install --save ngx-place-picker`
 
-## Code scaffolding
+## Usage
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+``` html
+<ngx-place-picker 
+    (locationChanged)="this.logLocationChange($event)" 
+    [enablePlacesSearch]="true"
+    [enableCurrentLocation]="true">
+</ngx-place-picker>
+```
 
-## Build
+## Inputs
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+**`[enableCurrentLocation]`** *`(boolean)`*: Defaults the map to current location
 
-## Running unit tests
+**`[enablePlacesSearch]`** *`(boolean)`*: Enable a search bar to search via Google places API
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+**`[defaultLocation]`** *`(Location)`*: Pass a default location to center the map
 
-## Running end-to-end tests
+```
+{
+    lat: 0,
+    lng: 0,
+    zoom: 14
+}
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+**`[vSize]`** *`(number)`*: vertical size of the map, Horizontal size is taken from the parent
 
-## Further help
+## Outputs
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+**`(locationChanged)`** *`(Location)`*: Selected location
+
+## Library initialization
+
+Add the script tag for Google maps in your html file
+```
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=<API_KEY>&libraries=places">
+  </script>
+```
+You can skip the `&libraries=places` if you don't intend to use the search.
+
+If your app immediately shows the map widget, you'll have to remove `async defer` from the script tag
