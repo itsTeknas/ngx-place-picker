@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { BehaviorSubject, of, Observable } from 'rxjs';
 import { tap, debounceTime, map, filter } from 'rxjs/operators';
 import { Location } from './location';
@@ -46,38 +46,12 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
 
   public searchResults: Location[];
 
-  constructor() { }
+  constructor(
+    private changeDetector: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.location = this.defaultLocation;
-    this.search$.pipe(
-      filter((query) => !!query),
-      debounceTime(200),
-      tap((search) => {
-        console.log('Searching: ', search);
-      }),
-      map((searchQuery) => {
-        const placesRequest = {
-          query: searchQuery,
-          fields: ['name', 'geometry', 'icon'],
-        };
-        return placesRequest;
-      }),
-    ).subscribe((placesRequest) => {
-      this.placesSearchService.findPlaceFromQuery(placesRequest, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          console.log(results);
-          this.googleMap.setCenter(results[0].geometry.location);
-          this.searchResults = (results as unknown as any[])
-            .map(p => ({
-              lat: p.geometry.location.lat(),
-              lng: p.geometry.location.lng(),
-              name: p.name,
-              icon: p.icon
-            })) as unknown as Location[];
-        }
-      });
-    });
   }
 
   ngAfterViewInit() {
@@ -85,11 +59,41 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
       this.googleMap = new google.maps.Map(this.map.nativeElement, {
         center: { lat: this.defaultLocation.lat, lng: this.defaultLocation.lng },
         disableDefaultUI: true,
+        zoomControl: true,
         zoom: this.defaultLocation.zoomLevel
       });
 
       if (google.maps.hasOwnProperty('places')) {
         this.placesSearchService = new google.maps.places.PlacesService(this.googleMap);
+        this.search$.pipe(
+          filter((query) => !!query),
+          debounceTime(200),
+          tap((search) => {
+            console.log('Searching: ', search);
+          }),
+          map((searchQuery) => {
+            const placesRequest = {
+              query: searchQuery,
+              fields: ['name', 'geometry', 'icon'],
+            };
+            return placesRequest;
+          }),
+        ).subscribe((placesRequest) => {
+          this.placesSearchService.findPlaceFromQuery(placesRequest, (results, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+              console.log(results);
+              this.googleMap.setCenter(results[0].geometry.location);
+              this.searchResults = (results as unknown as any[])
+                .map(p => ({
+                  lat: p.geometry.location.lat(),
+                  lng: p.geometry.location.lng(),
+                  name: p.name,
+                  icon: p.icon
+                })) as unknown as Location[];
+              this.changeDetector.detectChanges();
+            }
+          });
+        });
       } else {
         console.error('Places API not enabled or present in the script import');
       }
@@ -102,6 +106,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
 
   clearSearch() {
     this.searchResults = [];
+    this.changeDetector.detectChanges();
   }
 
   searchChange($event) {
