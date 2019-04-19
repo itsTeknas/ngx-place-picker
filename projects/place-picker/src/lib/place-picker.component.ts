@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { BehaviorSubject, of, Observable } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { BehaviorSubject, of, Observable, Subscription } from 'rxjs';
 import { tap, debounceTime, map, filter } from 'rxjs/operators';
 import { Location } from './location';
 
@@ -10,7 +10,7 @@ declare var google: any;
   templateUrl: './place-picker.component.html',
   styleUrls: ['./place-picker.component.css']
 })
-export class PlacePickerComponent implements OnInit, AfterViewInit {
+export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input()
   enableCurrentLocation = true;
@@ -38,6 +38,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
   private googleMap: any;
   private placesSearchService: any;
   private search$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private searchSubscription: Subscription;
   search = '';
 
   public searchResults: Location[];
@@ -87,7 +88,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
 
       if (google.maps.hasOwnProperty('places')) {
         this.placesSearchService = new google.maps.places.PlacesService(this.googleMap);
-        this.search$.pipe(
+        this.searchSubscription = this.search$.pipe(
           filter((query) => !!query),
           debounceTime(200),
           tap((search) => {
@@ -139,5 +140,13 @@ export class PlacePickerComponent implements OnInit, AfterViewInit {
     this.location = result;
     this.searchSelected.next(result);
     this.clearSearch();
+  }
+
+  ngOnDestroy() {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+    delete this.googleMap;
+    delete this.placesSearchService;
   }
 }
