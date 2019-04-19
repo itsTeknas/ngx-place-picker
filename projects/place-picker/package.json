@@ -36,6 +36,7 @@
   "description": "Angular components to help pick location using google maps and places API",
   "peerDependencies": {
     "@angular/common": "^7.2.0",
-    "@angular/core": "^7.2.0"
+    "@angular/core": "^7.2.0",
+    "rxjs": "~6.3.3"
   }
 }

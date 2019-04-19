@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { BehaviorSubject, of, Observable, Subscription } from 'rxjs';
-import { tap, debounceTime, map, filter } from 'rxjs/operators';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { debounceTime, filter, map, tap } from 'rxjs/operators';
 import { Location } from './location';
 
 declare var google: any;
