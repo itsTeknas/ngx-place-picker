@@ -43,11 +43,21 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
 
-    if (!this.defaultLocation) {
-      this.location = this.defaultLocation = this.initDefaultLocation();
+    // check formatting of defaultLocation
+    if (this.defaultLocation) {
+      if (!(typeof this.defaultLocation.lat === 'number' && typeof this.defaultLocation.lng === 'number')) {
+        //ignoring improperly formatted location
+        this.defaultLocation = null;
+      }
     }
 
-    if (this.enableCurrentLocation) {
+    if (this.defaultLocation) {
+      // Default location superseeds everything
+      this.location = this.defaultLocation;
+    } else if (this.enableCurrentLocation) {
+      // for ngAfterViewInit to immediately use
+      this.defaultLocation = this.location = this.initDefaultLocation()
+      // initiate location query
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           const pos = {
@@ -63,6 +73,9 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         // Browser doesn't support Geolocation
       }
+    } else {
+      // library default location
+      this.defaultLocation = this.location = this.initDefaultLocation();
     }
   }
 
@@ -153,8 +166,8 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initDefaultLocation(): Location {
     return {
-      lat: 19.2185598,
-      lng: 72.8598972,
+      lat: 0,
+      lng: 0,
       zoom: 14
     }
   }

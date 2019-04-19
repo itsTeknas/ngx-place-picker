@@ -47,6 +47,8 @@ Add the script tag for Google maps in your html file
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=<API_KEY>&libraries=places">
   </script>
 ```
+Replace the **API_KEY** with api key obtained from google cloud console
+
 You can skip the `&libraries=places` if you don't intend to use the search.
 
 If your app immediately shows the map widget, you'll have to remove `async defer` from the script tag
