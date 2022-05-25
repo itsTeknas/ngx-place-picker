@@ -146,7 +146,7 @@
       "prefix": "ngx",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/place-picker/tsconfig.lib.json",
             "project": "projects/place-picker/ng-package.json"
