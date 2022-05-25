@@ -12,7 +12,7 @@ declare var google: any;
 })
 export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('map')
+  @ViewChild('map', { static: true })
   private map: ElementRef;
 
   @Input()
