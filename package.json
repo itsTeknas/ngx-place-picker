@@ -19,6 +19,7 @@
     "@angular/platform-browser": "~12.2.16",
     "@angular/platform-browser-dynamic": "~12.2.16",
     "@angular/router": "~12.2.16",
+    "@types/google.maps": "^3.49.1",
     "core-js": "^2.5.4",
     "rxjs": "~6.6.7",
     "tslib": "^2.0.0",

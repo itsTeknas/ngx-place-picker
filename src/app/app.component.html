@@ -20,18 +20,18 @@
   </div>
 
   <div class="row">
-    <div class="col-md-6">
-      <h2>1. Search and location enabled</h2>
+    <div class="col-md-12">
+      <h2>1. Search, location enabled & Plot Radius</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="true"
-        [enablePlacesSearch]="true"></ngx-place-picker>
+        [enablePlacesSearch]="true" [enableCircleRadius]="true"></ngx-place-picker>
     </div>
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <h2>2. Search Enabled Location Disabled</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="false"
         [enablePlacesSearch]="true"></ngx-place-picker>
-    </div>
+    </div> -->
   </div>
-  <div class="row mt-3">
+  <!-- <div class="row mt-3">
     <div class="col-md-6">
       <h2>3. Search disabled, Location enabled</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="true"
@@ -42,20 +42,20 @@
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)" [enableCurrentLocation]="false"
         [enablePlacesSearch]="false"></ngx-place-picker>
     </div>
-  </div>
+  </div> -->
 
   <div class="row mt-3">
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <h2>5. Default Location: Bermuda Triangle</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)"
         [defaultLocation]="{'lat':21.3755379,'lng':-77.2924902,'zoom':5}" [enablePlacesSearch]="true">
       </ngx-place-picker>
-    </div>
-    <div class="col-md-6">
+    </div> -->
+    <!-- <div class="col-md-6">
       <h2>6. Default Location: Area 51</h2>
       <ngx-place-picker (locationChanged)="this.logLocationChange($event)"
         [defaultLocation]="{'lat':36.6438012,'lng':-116.3981861,'zoom':17}" [enablePlacesSearch]="true">
       </ngx-place-picker>
-    </div>
+    </div> -->
   </div>
 </div>

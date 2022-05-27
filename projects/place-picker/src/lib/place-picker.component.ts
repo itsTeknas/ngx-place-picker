@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { debounceTime, filter, map, tap } from 'rxjs/operators';
 import { Location } from './location';
@@ -11,9 +11,12 @@ declare var google: any;
   styleUrls: ['./place-picker.component.css']
 })
 export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  
   @ViewChild('map', { static: true })
   private map: ElementRef;
+
+  @ViewChild('Search')
+  public searchElementRef: ElementRef;
 
   @Input()
   enableCurrentLocation = false;
@@ -23,6 +26,8 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
   defaultLocation: Location;
   @Input()
   vSize = 400;
+  @Input()
+  enableCircleRadius = false;
 
   @Output()
   locationChanged: EventEmitter<Location> = new EventEmitter<Location>();
@@ -30,6 +35,7 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
   location: Location;
 
   private googleMap: any;
+  private circle = new google.maps.Circle();
   private placesSearchService: any;
   private search$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private searchSubscription: Subscription;
@@ -38,11 +44,12 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
   public searchResults: Location[];
 
   constructor(
-    private changeDetector: ChangeDetectorRef
-  ) { }
+    private changeDetector: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) { 
+  }
 
   ngOnInit() {
-
     // check formatting of defaultLocation
     if (this.defaultLocation) {
       if (!(typeof this.defaultLocation.lat === 'number' && typeof this.defaultLocation.lng === 'number')) {
@@ -76,7 +83,21 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       // library default location
       this.defaultLocation = this.location = this.initDefaultLocation();
-    }
+    }    
+  }
+
+  setRadius(map, location: Location, radius) {
+    this.circle.setMap(null);
+    this.circle = new google.maps.Circle({
+      strokeColor: "#FF0000",
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: "#FF0000",
+      fillOpacity: 0.35,
+      map,
+      center: { lat: location.lat, lng: location.lng },
+      radius,
+    });
   }
 
   ngAfterViewInit() {
@@ -93,6 +114,9 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.location.lat = center.lat();
         this.location.lng = center.lng();
         this.location.zoom = this.googleMap.getZoom();
+        if (this.enableCircleRadius) {
+          this.setRadius(this.googleMap, {lat: center.lat(), lng: center.lng()}, 1000)
+        }
         this.locationChanged.next(this.location);
       });
 
@@ -115,7 +139,6 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
           ).subscribe((placesRequest) => {
             this.placesSearchService.findPlaceFromQuery(placesRequest, (results, status) => {
               if (status === google.maps.places.PlacesServiceStatus.OK) {
-                console.log(results);
                 this.searchResults = (results as unknown as any[])
                   .map(p => ({
                     lat: p.geometry.location.lat(),
@@ -136,6 +159,65 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
       console.error('Google Maps Client not loaded properly');
       console.error('Include the script tag for google maps with the API Key in your index.html');
     }
+    this.initAutocomplete();
+  }
+
+  initAutocomplete() {
+    const input = document.getElementById("placeSearch") as HTMLInputElement;
+    const autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.setFields([
+      "address_components",
+      "geometry",
+      "icon",
+      "name"
+    ]);
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) {
+        // User entered the name of a Place that was not suggested and
+        // pressed the Enter key, or the Place Details request failed.
+        alert('No details available for input:' + input.value);
+        return;
+      } else {
+        this.locationFromPlace(place)
+        return;
+      }
+    });
+  }
+
+  public locationFromPlace(place) {
+    const components = place.address_components;
+    if (components === undefined) {
+      return null;
+    }
+
+    const areaLevel3 = getShortName(components, 'administrative_area_level_3');
+    const locality = getLongName(components, 'locality');
+
+    const cityName = locality || areaLevel3;
+    const countryName = getLongName(components, 'country');
+    const countryCode = getShortName(components, 'country');
+    const stateCode = getShortName(components, 'administrative_area_level_1');
+    const name = place.name !== cityName ? place.name : null;
+
+    const coordinates = {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    };
+    this.selectSearchResult(coordinates)
+
+    const bounds = place.geometry.viewport.toJSON();
+
+    // placeId is in place.place_id, if needed
+    return {
+      name,
+      cityName,
+      countryName,
+      countryCode,
+      stateCode,
+      bounds,
+      coordinates,
+    };
   }
 
   clearSearch() {
@@ -148,9 +230,15 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selectSearchResult(result: Location) {
-    this.location = result;
+    this.location = {
+      lat: result.lat,
+      lng: result.lng,
+      zoom: 14,
+    };
     this.googleMap.setCenter({ lat: result.lat, lng: result.lng });
-    this.clearSearch();
+    if (this.enableCircleRadius) {
+      this.setRadius(this.googleMap, { lat: result.lat, lng: result.lng }, 1000)
+    }
   }
 
   ngOnDestroy() {
@@ -171,4 +259,18 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
       zoom: 14
     }
   }
+}
+
+function getComponent(components, name: string) {
+  return components.filter((component) => component.types[0] === name)[0];
+}
+
+function getLongName(components, name: string) {
+  const component = getComponent(components, name);
+  return component && component.long_name;
+}
+
+function getShortName(components, name: string) {
+  const component = getComponent(components, name);
+  return component && component.short_name;
 }
