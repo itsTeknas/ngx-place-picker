@@ -83,7 +83,10 @@ export class PlacePickerComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       // library default location
       this.defaultLocation = this.location = this.initDefaultLocation();
-    }    
+    }   
+    if (this.enableCircleRadius && this.defaultLocation) {
+      this.setRadius(this.googleMap, this.defaultLocation, 1000);
+    } 
   }
 
   setRadius(map, location: Location, radius) {
